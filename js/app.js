@@ -1,4 +1,5 @@
 'use strict'
+
 function Image(image_url, title, description, keyword, horns) {
     this.image_url = image_url;
     this.title = title;
@@ -50,18 +51,70 @@ $("#dropdown1").on('change', (val) => {
         $(`.${selectedVal}`).fadeIn(200);
     }
 });
-// function data() {
 
-// }
-$.get('data/page-1.json')
+$(document).ready(function () {
+    show();
+})
+
+
+    // $.get('data/page-1.json')
+    // .then(data => {
+    //     data.forEach(element => {
+    //         let newImage = new Image(element.image_url, element.title, element.description, element.keyword, element.horns);
+    //         newImage.filterKeword();
+    //         newImage.render();
+    //     });
+    // });
+
+    
+
+
+function show(){  
+    $('#photo-template').html('');
+    $.get('data/page-1.json')
     .then(data => {
         data.forEach(element => {
             let newImage = new Image(element.image_url, element.title, element.description, element.keyword, element.horns);
             newImage.filterKeword();
             newImage.render();
+
         });
     });
+}
+$('#page1').on('click',show);
 
 
 
+function showTwo(){
+    $('#photo-template').html('');
+    $.get('data/page-2.json')
+    .then(data => {
+            data.forEach(element => {
+                let newImage = new Image(element.image_url, element.title, element.description, element.keyword, element.horns);
+                newImage.filterKeword();
+                newImage.render();
+            });
+        });
+}
+$('#page2').on('click', showTwo);
+
+
+    
+   
+        //     $.get('data/page-1.json')
+        // .then(data => {
+        //         data.forEach(element => {
+        //                 let newImage = new Image(element.image_url, element.title, element.description, element.keyword, element.horns);
+        //                 newImage.filterKeword();
+        //                 newImage.render();
+        //             });
+        //         });
+   
+    
+    
+    
+
+            
+            
+            
 
