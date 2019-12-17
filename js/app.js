@@ -6,10 +6,10 @@ function Image(image_url, title, description, keyword, horns) {
     this.description = description;
     this.keyword = keyword;
     this.horns = horns;
-
+Image.all.push(this);
 }
 let keywords = [];
-
+Image.all=[];
 Image.prototype.render = function () {
     let templateId = '#showtemplate';
     let template = $(templateId).html();
@@ -77,7 +77,7 @@ function show(){
             let newImage = new Image(element.image_url, element.title, element.description, element.keyword, element.horns);
             newImage.filterKeword();
             newImage.render();
-
+            // newImage.sort();
         });
     });
 }
@@ -93,26 +93,61 @@ function showTwo(){
                 let newImage = new Image(element.image_url, element.title, element.description, element.keyword, element.horns);
                 newImage.filterKeword();
                 newImage.render();
+                // newImage.sort();
             });
         });
 }
 $('#page2').on('click', showTwo);
+function sort(){
 
 
+    $('.sort').on('click', function () {
+        if ($('.sort').val() == 'title') {
+            sortTitle();
+            $('#photo-template').html('');
+            Image.all.forEach(element => {
+                element.render();
+            });
+        } else if ($('.sort').val() == 'number') {
+            sortHorns();            
+            $('#photo-template').html('');
+            Image.all.forEach(element => {
+                element.render();
+            });
+        }
+    });
+}
+sort();
+function sortTitle(){
+    Image.all.sort(function (a, b) {
+    var titleOne= a.title;
+    var titleTwo= b.title;
+    if (titleOne < titleTwo) {
+        return -1;
+    }
+    if (titleTwo < titleOne) {
+        return 1;
+    }
+    return 0;
+});
+}
+
+function sortHorns(){
+    Image.all.sort(function (a, b) {
+        var hornOne= a.horns;
+        var hornTwo= b.horns;
+        if (hornOne < hornTwo) {
+            return -1;
+        }
+        if (hornTwo < hornOne) {
+            return 1;
+        }
+        return 0;
+    });
+    }
     
    
-        //     $.get('data/page-1.json')
-        // .then(data => {
-        //         data.forEach(element => {
-        //                 let newImage = new Image(element.image_url, element.title, element.description, element.keyword, element.horns);
-        //                 newImage.filterKeword();
-        //                 newImage.render();
-        //             });
-        //         });
-   
-    
-    
-    
+
 
             
             
