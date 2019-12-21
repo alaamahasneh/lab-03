@@ -8,6 +8,7 @@ function Image(image_url, title, description, keyword, horns) {
     this.horns = horns;
 Image.all.push(this);
 }
+
 let keywords = [];
 Image.all=[];
 Image.prototype.render = function () {
@@ -16,17 +17,7 @@ Image.prototype.render = function () {
     let templateRender = Handlebars.compile(template);
     let showType = templateRender(this);
     $('#photo-template').append(showType);
-    // let showType = $(`
-    // <li>
-    //   <h2></h2>
-    //   <img/>
-    //   <p></p>
-    // </li>
-    // `).clone();
-    // showType.find('h2').text(this.title);
-    // showType.find('img').attr('src', this.image_url);
-    // showType.find('p').text(this.description);
-    // showType.addClass(this.keyword);
+   
 }
 Image.prototype.filterKeword = function () {
     // google ( how to check if something is already in array js)
@@ -53,103 +44,63 @@ $("#dropdown1").on('change', (val) => {
 });
 
 $(document).ready(function () {
-    show();
+    show('data/page-1.json');
 })
 
 
-    // $.get('data/page-1.json')
-    // .then(data => {
-    //     data.forEach(element => {
-    //         let newImage = new Image(element.image_url, element.title, element.description, element.keyword, element.horns);
-    //         newImage.filterKeword();
-    //         newImage.render();
-    //     });
-    // });
-
-    
-
-
-function show(){  
-    $('#photo-template').html('');
-    $.get('data/page-1.json')
+function show(fileName){ 
+    console.log(fileName);
+    Image.all=[]; // 1. Clear the array
+    keywords = [];
+    // Clear the filterKeyword array and the select
+    $('#dropdown1').html(`<option value="default">Filter by keyword</option>`); 
+    // $('#photo-template').html('<ul></ul>');
+    $('#photo-template').empty();
+    $.get(fileName)
     .then(data => {
+       
         data.forEach(element => {
             let newImage = new Image(element.image_url, element.title, element.description, element.keyword, element.horns);
             newImage.filterKeword();
             newImage.render();
-            // newImage.sort();
         });
     });
 }
-$('#page1').on('click',show);
+
+$('#page1').on('click',() => {show('data/page-1.json')});
+$('#page2').on('click', () => {show('data/page-2.json')});
 
 
-
-function showTwo(){
-    $('#photo-template').html('');
-    $.get('data/page-2.json')
-    .then(data => {
-            data.forEach(element => {
-                let newImage = new Image(element.image_url, element.title, element.description, element.keyword, element.horns);
-                newImage.filterKeword();
-                newImage.render();
-                // newImage.sort();
-            });
-        });
-}
-$('#page2').on('click', showTwo);
-function sort(){
-
-
-    $('.sort').on('click', function () {
-        if ($('.sort').val() == 'title') {
-            sortTitle();
-            $('#photo-template').html('');
-            Image.all.forEach(element => {
-                element.render();
-            });
-        } else if ($('.sort').val() == 'number') {
-            sortHorns();            
-            $('#photo-template').html('');
-            Image.all.forEach(element => {
-                element.render();
-            });
-        }
-    });
-}
-sort();
-function sortTitle(){
+function sortBy(attr){ 
+    $('#photo-template').empty();
     Image.all.sort(function (a, b) {
-    var titleOne= a.title;
-    var titleTwo= b.title;
-    if (titleOne < titleTwo) {
-        return -1;
-    }
-    if (titleTwo < titleOne) {
-        return 1;
-    }
-    return 0;
-});
-}
-
-function sortHorns(){
-    Image.all.sort(function (a, b) {
-        var hornOne= a.horns;
-        var hornTwo= b.horns;
-        if (hornOne < hornTwo) {
+        var attrOne= a[attr];
+        var attrTwo= b[attr];
+        if (attrOne < attrTwo) {
             return -1;
         }
-        if (hornTwo < hornOne) {
-            return 1;
+        if (attrTwo < attrOne) {
+            return 1;            
         }
         return 0;
     });
-    }
-    
-   
+}
+$('#sortTitle').on("click", ()=>{
+    sortBy('title');
+    // Image.all =[];
+    $('#photo-template').html('');
+    Image.all.forEach(element => {
+        let newImage = new Image(element.image_url, element.title, element.description, element.keyword, element.horns);
+        newImage.render();
+    });
 
+});
+$('#sortHorn').on("click", ()=>{
+    sortBy('horns');
+    $('#photo-template').html('');
+    Image.all.forEach(element => {
+        let newImage = new Image(element.image_url, element.title, element.description, element.keyword, element.horns);
+        newImage.render();
+    });
 
-            
-            
-            
-
+});
